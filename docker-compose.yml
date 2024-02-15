@@ -1,0 +1,80 @@
+version: '3.4'
+
+services:
+  postgres-gauss:
+    image: postgres
+    container_name: postgres-gauss
+    volumes:
+      - postgres-gauss:/var/lib/postgresql/data
+    hostname: postgres-gauss
+    networks:
+      - gauss_network
+    environment:
+      - POSTGRES_PASSWORD=gauss24
+
+  gauss3:
+    image: gauss3
+    depends_on:
+      - postgres-gauss
+    hostname: gauss3
+    container_name: gauss3
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - gauss_network
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: django_celery_example_celery_worker
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env/.dev-sample
+    depends_on:
+      - redis
+      - db
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: django_celery_example_celery_beat
+    command: /start-celerybeat
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env/.dev-sample
+    depends_on:
+      - redis
+      - db
+
+  flower:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: django_celery_example_celery_flower
+    command: /start-flower
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env/.dev-sample
+    ports:
+      - 5557:5555
+    depends_on:
+      - redis
+      - db
+
+volumes:
+  postgres-gauss:
+    external: true
+    name: postgres-gauss
+
+networks:
+  gauss_network:
+    name: gauss_network
