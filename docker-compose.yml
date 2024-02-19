@@ -94,8 +94,6 @@ volumes:
     external: true
     name: postgres-gauss
   rabbitmq-data:
-    external: true
-    name: rabbitmq-data
   static_volume:
   media_volume:
 
