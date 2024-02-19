@@ -1,4 +1,4 @@
-# Dockerizing Django App with Nginx and Celery
+# Dockerizing Gauss with Nginx and Celery
 
 This documentation outlines the process of dockerizing a Django web application along with Nginx as a reverse proxy server and Celery for handling asynchronous tasks. 
 ## Components
