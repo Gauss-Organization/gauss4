@@ -11,8 +11,9 @@ services:
       - gauss_network
     ports:
       - 5432:5432
-    env_file:
-      - path: ./.env
+    env_file: .env
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
   rabbitmq:
     container_name: rabbitmq
@@ -21,12 +22,15 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+    env_file: .env
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_DEFAULT_VHOST}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     networks:
       - gauss_network
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
-    env_file:
-      - path: ./.env
 
   gauss3:
     image: gauss3
