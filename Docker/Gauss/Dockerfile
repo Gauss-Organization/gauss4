@@ -26,6 +26,10 @@ RUN python -m pip install -r requirements.txt
 
 COPY gauss/settings.py /var/www/python/gauss3/gauss/settings.py
 
+COPY ./scripts/cleanMigration.sh /cleanMigration.sh
+RUN sed -i 's/\r$//g' /cleanMigration.sh
+RUN chmod +x /cleanMigration.sh
+
 COPY ./scripts/worker_start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
 RUN chmod +x /start-celeryworker
